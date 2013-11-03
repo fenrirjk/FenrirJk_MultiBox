@@ -128,7 +128,9 @@ function f_FMB_SPL_InitToonChainCast(i_turn, i_nextToon, i_spell)
         l_turn = false
     end
 
-    g_FMB_SPL_ToonChainCast[i_spell] = { turn = l_turn, nextToon = i_nextToon }
+    g_FMB_SPL_ToonChainCast[i_spell] = { turn = nil, nextToon = nil }
+    g_FMB_SPL_ToonChainCast[i_spell].turn = l_turn
+    g_FMB_SPL_ToonChainCast[i_spell].nextToon = i_nextToon
 end
 
 function f_FMB_SPL_ToonChainCast(i_spell)

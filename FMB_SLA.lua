@@ -15,4 +15,12 @@ function f_FMB_SLA_Init()
     SLASH_FMB_RemoteScript1 = "/FMB_RemoteScript"
     SLASH_FMB_RemoteScript2 = "/FMB_RemoteScript"
 	SlashCmdList["FMB_RemoteScript"] = f_FMB_EVT_RemoteScript
+
+    SLASH_FMB_FindNearestEnemy1 = "/FMB_FindNearestEnemy"
+    SLASH_FMB_FindNearestEnemy2 = "/FMB_FindNearestEnemy"
+	SlashCmdList["FMB_FindNearestEnemy"] = function(id) f_FMB_TAR_FindNearestenemy(tonumber(id)) end
+
+    SLASH_FMB_StartCombat1 = "/FMB_StartCombat"
+    SLASH_FMB_StartCombat2 = "/FMB_StartCombat"
+	SlashCmdList["FMB_StartCombat"] = f_FMB_SPL_StartCombat
 end

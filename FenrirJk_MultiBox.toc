@@ -1,5 +1,5 @@
 ## Interface: 11200
 ## Title: FenrirJK MultiBox
-## Notes: Helper addon for my multiboxing v0.06
+## Notes: Helper addon for my multiboxing v0.07
 ## SavedVariables:
 FMB.xml

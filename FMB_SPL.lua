@@ -1,38 +1,40 @@
 function f_FMB_SPL_Init()
 	g_FMB_SPL_Combat = false
     g_FMB_SPL_FirstCombatLoop = false
-    g_FMB_SPL_MainToon = nil
+    g_FMB_SPL_NextCastTime = 0
 end
 
 function f_FMB_SPL_Cast(i_spellname)
     local l_spell
+	local l_start
+	local l_duration
 
-    if g_FMB_PlayerSpells == nil or g_FMB_PlayerSpells[i_spellname] == nil or g_FMB_PlayerMaxRank == nil or g_FMB_PlayerMaxRank[i_spellname] == nil then
+    if g_FMB_PlayerSpells == nil or g_FMB_PlayerSpells[i_spellname] == nil then
         f_FMB_SPL_GetSpellInfo()
     end
 
-    if (strfind(i_spellname, "(") and strfind(i_spellname, ")")) then
-        l_spell = g_FMB_PlayerSpells[i_spellname]
-    else
-        l_spell = g_FMB_PlayerMaxRank[i_spellname]
-    end
+    l_spell = g_FMB_PlayerSpells[i_spellname]
 
-    if l_spellId == nil then
+    if l_spell.index == nil then
 		f_FMT_UTL_Log("Spell: " .. i_spellname .. " Not found")
         return -1
     end
 
-	local l_start
-	local l_duration
+    if GetTime() < g_FMB_SPL_NextCastTime then
+		f_FMT_UTL_Log("Spell: " .. i_spellname .. " not yet ready, will be ready in " .. g_FMB_SPL_NextCastTime - GetTime() .. "s.")
+        return g_FMB_SPL_NextCastTime - GetTime()
+    end
 
 	l_start, l_duration = GetSpellCooldown(l_spell.index, BOOKTYPE_SPELL)
 
 	if l_start ~= 0 then
-		f_FMT_UTL_Log("Spell: " .. i_spellname .. " not yet ready, will be ready in " .. l_duration - (GetTime() - l_start) .. "s.")
+		f_FMT_UTL_Log("Spell: " .. i_spellname .. " cooldown not yet met, will be met in " .. l_duration - (GetTime() - l_start) .. "s.")
 		return l_duration - (GetTime() - l_start)
 	end
 
-    CastSpell(l_spell.index, "spell")
+    g_FMB_SPL_NextCastTime = GetTime() + l_spell.castTime
+    g_FMB_SPL_CurrentSpell = i_spellname
+    CastSpell(l_spell.index, BOOKTYPE_SPELL)
 
     return 0
 end
@@ -62,7 +64,6 @@ end
 function f_FMB_SPL_GetSpellInfo()
 	-- Load tables up with spell position by name for a CastSpell that works in scripts
     g_FMB_PlayerSpells = {}
-    g_FMB_PlayerMaxRank = {}
     g_FMB_PetSpells = {}
     g_FMB_PetMaxRank = {}
     local l_index = 1
@@ -73,12 +74,16 @@ function f_FMB_SPL_GetSpellInfo()
         if not l_spellname then break end
         if not l_spellrank then l_spellrank = "" end
         if not IsSpellPassive(l_index,1) then
+            l_spell = { index = nil, castTime = nil }
             l_spell.index = l_index
-            if (l_spellname == "Pyroblast") then l_spell.castTime = 7
-            else l_spell.castTime = 4
+            if (l_spellname == "Pyroblast") then
+                l_spell.castTime = 7
+            else
+                l_spell.castTime = 4
             end
             g_FMB_PlayerSpells[l_spellname.."("..l_spellrank..")"] = l_spell
-            g_FMB_PlayerMaxRank[l_spellname] = l_spell
+            g_FMB_PlayerSpells[l_spellname] = l_spell
+            f_FMT_UTL_Log("Found spell: " .. l_spellname .. ", ID: " .. l_spell.index)
         end
         l_index = l_index+1
     end
@@ -97,10 +102,6 @@ function f_FMB_SPL_GetSpellInfo()
     end
 end
 
-function f_FMB_SPL_SetSpellList(i_spells)
-    g_FMB_SpellList = i_spells
-end
-
 function f_FMB_SPL_StartCombat()
 	if g_FMB_SPL_Combat == false then
 		g_FMB_SPL_Combat = true
@@ -114,23 +115,34 @@ function f_FMB_SPL_StopCombat()
 	end
 end
 
+function f_FMB_SPL_SetSpellList(i_spells)
+    g_FMB_SpellList = i_spells
+end
+
+function f_FMB_SPL_ToonChainCast(i_name, i_turn, i_next, i_spell)
+    local l_context
+
+    l_context.name = i_name
+    l_context.turn = i_turn
+    l_context.next = i_next
+    l_context.spell = i_spell
+
+    return l_context
+end
+
+function f_FMB_SPL_ToonChainCast(i_context)
+    if i_context.turn then
+		SpellStopCasting()
+        f_FMB_SPL_Cast(i_context.spell)
+        i_context.turn = false
+        f_FMB_EVT_RemoteScript(i_context.next .. ":" .. i_context.name .. ".turn = true")
+    end
+end
+
 function f_FMB_SPL_CastSequence(i_spells, i_reset)
     local l_target
     local l_spellId
     local l_cpt
-
-    if g_FMB_SPL_MainToon ~= nil then
-        AssistByName(g_FMB_SPL_MainToon)
-    end
-
-    l_cpt = 1000
-    while l_cpt > 0 do
-        if (GetRaidTargetIndex("Target") == 8) then break
-        else
-            TargetNearestEnemy()
-            l_cpt = l_cpt - 1
-        end
-    end
 
 	l_target = UnitName("Target")
 
@@ -145,12 +157,6 @@ function f_FMB_SPL_CastSequence(i_spells, i_reset)
 			f_FMB_SPL_StopCombat()
 			g_FMB_SPL_CastSequenceCpt = 1
 		end
-	end
-
-	if g_FMB_SPL_stopCast == true then
-		g_FMB_SPL_stopCast = false
-		SpellStopCasting()
-		return
 	end
 
 	if l_target == nil then

@@ -1,8 +1,3 @@
-f_FMB_SPL_Init()
-f_FMB_EVT_Init()
-f_FMB_SLA_Init()
--- f_FMB_TAR_Init()
-
 function f_FMB_TAR_Init()
     g_FMB_SPL_MainToon = nil
 end
@@ -23,8 +18,8 @@ function f_FMB_TAR_FindNearestTarget(i_raidTargetIndex, i_z_friend)
         else
             TargetNearestEnemy()
         end
-        if GetRaidTargetIndex("Target") == i_raidTargetIndex then break end
-        i_cpt = i_cpt - 1
+        if GetRaidTargetIndex == i_raidTargetIndex then break end
+        i_cpt = i_cpt = 1
     end
 end
 
@@ -35,6 +30,3 @@ end
 function f_FMB_TAR_FindNearestenemy(i_raidTargetIndex)
     f_FMB_TAR_FindNearestTarget(i_raidTargetIndex, false)
 end
-
-
-f_FMB_UTL_SendMsg("FenrirJk MultiBox loaded")

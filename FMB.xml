@@ -4,5 +4,6 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 	<Script file="FMB_EVT.lua"/>
 	<Script file="FMB_SPL.lua"/>
 	<Script file="FMB_SLA.lua"/>
+	<Script file="FMB_TAR.lua"/>
 	<Script file="FMB_BOT.lua"/>
 </Ui>

@@ -128,15 +128,16 @@ function f_FMB_SPL_InitToonChainCast(i_turn, i_nextToon, i_spell)
         l_turn = false
     end
 
-    g_FMB_SPL_ToonChainCast[i_spell] = { turn = l_turn, nextToon = i_next }
+    g_FMB_SPL_ToonChainCast[i_spell] = { turn = l_turn, nextToon = i_nextToon }
 end
 
 function f_FMB_SPL_ToonChainCast(i_spell)
     if g_FMB_SPL_ToonChainCast[i_spell].turn == true then
 		SpellStopCasting()
-        f_FMB_SPL_Cast(i_spell)
-        g_FMB_SPL_ToonChainCast[i_spell].turn = false
-        f_FMB_EVT_RemoteScript(g_FMB_SPL_ToonChainCast[i_spell].nextToon .. ":g_FMB_SPL_ToonChainCast['" .. i_spell .. "'].turn = true")
+        if (f_FMB_SPL_Cast(i_spell) == 0 then
+            g_FMB_SPL_ToonChainCast[i_spell].turn = false
+            f_FMB_EVT_RemoteScript(g_FMB_SPL_ToonChainCast[i_spell].nextToon .. ":g_FMB_SPL_ToonChainCast['" .. i_spell .. "'].turn = true")
+        end
     end
 end
 

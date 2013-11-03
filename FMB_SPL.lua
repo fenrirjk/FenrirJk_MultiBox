@@ -22,14 +22,12 @@ function f_FMB_SPL_Cast(i_spellname)
     end
 
     if GetTime() < g_FMB_SPL_NextCastTime then
-		f_FMT_UTL_Log("Spell: " .. i_spellname .. " not yet ready, will be ready in " .. g_FMB_SPL_NextCastTime - GetTime() .. "s.")
-        return g_FMB_SPL_NextCastTime - GetTime()
+		return g_FMB_SPL_NextCastTime - GetTime()
     end
 
 	l_start, l_duration = GetSpellCooldown(l_spell.index, BOOKTYPE_SPELL)
 
 	if l_start ~= 0 then
-		f_FMT_UTL_Log("Spell: " .. i_spellname .. " cooldown not yet met, will be met in " .. l_duration - (GetTime() - l_start) .. "s.")
 		return l_duration - (GetTime() - l_start)
 	end
 
@@ -56,7 +54,6 @@ function f_FMB_SPL_CastSequenceWrapper(i_str)
         l_reset, l_nbArgs = f_FMB_UTL_SplitStr(l_args[0], "=", 2)
         if l_nbArgs == 2 then
             l_reset = tonumber(f_FMB_UTL_Trim(l_reset[1]))
-            f_FMT_UTL_Log("f_FMB_SPL_CastSequenceWrapper:reset = " .. l_reset)
         else
             l_reset = nil
         end
@@ -65,7 +62,6 @@ function f_FMB_SPL_CastSequenceWrapper(i_str)
         l_spells = i_str
     end
 
-    f_FMT_UTL_Log("f_FMB_SPL_CastSequenceWrapper:spells = " .. l_spells)
     l_spells, l_nbArgs = f_FMB_UTL_SplitStr(l_spells, ",")
     f_FMB_SPL_CastSequence(l_spells, l_reset)
 end

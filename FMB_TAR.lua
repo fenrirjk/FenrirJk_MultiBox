@@ -5,12 +5,6 @@ end
 function f_FMB_TAR_FindNearestTarget(i_raidTargetIndex, i_z_friend)
     local i_cpt
 
-    if g_FMB_TAR_MainToon ~= nil then
-        AssistByName(g_FMB_SPL_MainToon)
-    else
-        f_FMT_UTL_Debug("f_FMB_TAR_FindNearestTarget: Warning: g_FMB_TAR_MainToon not set")
-    end
-
     i_cpt = 100
     while i_cpt > 0 do
         if i_z_friend == true then
@@ -18,9 +12,11 @@ function f_FMB_TAR_FindNearestTarget(i_raidTargetIndex, i_z_friend)
         else
             TargetNearestEnemy()
         end
-        if GetRaidTargetIndex("Target") == i_raidTargetIndex then break end
+        if GetRaidTargetIndex("Target") == i_raidTargetIndex then return end
         i_cpt = i_cpt - 1
     end
+
+    ClearTarget()
 end
 
 function f_FMB_TAR_FindNearestFriend(i_raidTargetIndex)

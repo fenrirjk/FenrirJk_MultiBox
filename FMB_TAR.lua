@@ -18,8 +18,8 @@ function f_FMB_TAR_FindNearestTarget(i_raidTargetIndex, i_z_friend)
         else
             TargetNearestEnemy()
         end
-        if GetRaidTargetIndex == i_raidTargetIndex then break end
-        i_cpt = i_cpt = 1
+        if GetRaidTargetIndex("Target") == i_raidTargetIndex then break end
+        i_cpt = i_cpt - 1
     end
 end
 

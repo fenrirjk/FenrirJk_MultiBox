@@ -134,7 +134,7 @@ end
 function f_FMB_SPL_ToonChainCast(i_spell)
     if g_FMB_SPL_ToonChainCast[i_spell].turn == true then
 		SpellStopCasting()
-        if (f_FMB_SPL_Cast(i_spell) == 0 then
+        if f_FMB_SPL_Cast(i_spell) == 0 then
             g_FMB_SPL_ToonChainCast[i_spell].turn = false
             f_FMB_EVT_RemoteScript(g_FMB_SPL_ToonChainCast[i_spell].nextToon .. ":g_FMB_SPL_ToonChainCast['" .. i_spell .. "'].turn = true")
         end

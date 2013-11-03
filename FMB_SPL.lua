@@ -2,6 +2,7 @@ function f_FMB_SPL_Init()
 	g_FMB_SPL_Combat = false
     g_FMB_SPL_FirstCombatLoop = false
     g_FMB_SPL_NextCastTime = 0
+    g_FMB_SPL_ToonChainCast = {}
 end
 
 function f_FMB_SPL_Cast(i_spellname)
@@ -119,23 +120,23 @@ function f_FMB_SPL_SetSpellList(i_spells)
     g_FMB_SpellList = i_spells
 end
 
-function f_FMB_SPL_ToonChainCast(i_name, i_turn, i_next, i_spell)
-    local l_context
+function f_FMB_SPL_InitToonChainCast(i_turn, i_nextToon, i_spell)
+    local l_turn
+    if i_turn == "true" then
+        l_turn = true
+    else
+        l_turn = false
+    end
 
-    l_context.name = i_name
-    l_context.turn = i_turn
-    l_context.next = i_next
-    l_context.spell = i_spell
-
-    return l_context
+    g_FMB_SPL_ToonChainCast[i_spell] = { turn = l_turn, nextToon = i_next }
 end
 
-function f_FMB_SPL_ToonChainCast(i_context)
-    if i_context.turn then
+function f_FMB_SPL_ToonChainCast(i_spell)
+    if g_FMB_SPL_ToonChainCast[i_spell].turn == true then
 		SpellStopCasting()
-        f_FMB_SPL_Cast(i_context.spell)
-        i_context.turn = false
-        f_FMB_EVT_RemoteScript(i_context.next .. ":" .. i_context.name .. ".turn = true")
+        f_FMB_SPL_Cast(i_spell)
+        g_FMB_SPL_ToonChainCast[i_spell].turn = false
+        f_FMB_EVT_RemoteScript(g_FMB_SPL_ToonChainCast[i_spell].nextToon .. ":g_FMB_SPL_ToonChainCast['" .. i_spell .. "'].turn = true")
     end
 end
 

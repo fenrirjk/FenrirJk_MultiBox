@@ -23,4 +23,21 @@ function f_FMB_SLA_Init()
     SLASH_FMB_StartCombat1 = "/FMB_StartCombat"
     SLASH_FMB_StartCombat2 = "/FMB_StartCombat"
 	SlashCmdList["FMB_StartCombat"] = f_FMB_SPL_StartCombat
+
+    SLASH_FMB_InitToonChainCast1 = "/FMB_ITCC"
+    SLASH_FMB_InitToonChainCast2 = "/FMB_InitToonChainCast"
+	SlashCmdList["FMB_InitToonChainCast"] =
+    function(i_args)
+        local l_args, l_nbArgs
+        l_args, l_nbArgs = f_FMB_UTL_SplitStr(i_args, ",", 3)
+        if l_nbArgs ~= 3 then
+            f_FMT_UTL_Debug("/FMB_InitToonChainCast: Format error: " .. i_args)
+        else
+            f_FMB_SPL_InitToonChainCast(l_args[0], l_args[1], l_args[2])
+        end
+    end
+
+    SLASH_FMB_ToonChainCast1 = "/FMB_ToonChainCast"
+    SLASH_FMB_ToonChainCast2 = "/FMB_ToonChainCast"
+	SlashCmdList["FMB_ToonChainCast"] = f_FMB_SPL_ToonChainCast
 end

@@ -44,22 +44,30 @@ function f_FMB_SPL_CastSequenceWrapper(i_str)
     local l_reset
     local l_spells
 
-    l_args, l_nbArgs = f_FMB_UTL_SplitStr(i_str, ",")
+    l_args, l_nbArgs = f_FMB_UTL_SplitStr(i_str, ",", 2)
     l_spells = l_args;
 
-    if strfind(l_args[1], "reset") ~= nil then
-        tremove(l_spells, 1)
-        l_reset, l_nbArgs = f_FMB_UTL_SplitStr(l_args[1], "=", 2)
+    if strfind(l_args[0], "reset") ~= nil then
+        if l_nbArgs ~= 2 then
+            f_FMT_UTL_Log("f_FMB_SPL_CastSequenceWrapper:format error: " .. i_str)
+        end
+
+        l_spells = l_args[1]
+        l_reset, l_nbArgs = f_FMB_UTL_SplitStr(l_args[0], "=", 2)
         if l_nbArgs == 2 then
-            l_reset = tonumber(f_FMB_UTL_Trim(l_reset[2]))
+            l_reset = tonumber(f_FMB_UTL_Trim(l_reset[1]))
+            f_FMT_UTL_Log("f_FMB_SPL_CastSequenceWrapper:reset = " .. l_reset)
         else
             l_reset = nil
         end
     else
         l_reset = nil
+        l_spells = i_str
     end
 
-    f_FMB_SPL_CastSequence(i_spells, i_reset)
+    f_FMT_UTL_Log("f_FMB_SPL_CastSequenceWrapper:spells = " .. l_spells)
+    l_spells, l_nbArgs = f_FMB_UTL_SplitStr(l_spells, ",")
+    f_FMB_SPL_CastSequence(l_spells, l_reset)
 end
 
 function f_FMB_SPL_GetSpellInfo()
@@ -159,7 +167,8 @@ function f_FMB_SPL_CastSequence(i_spells, i_reset)
 	else
 		if g_FMB_SPL_FirstCombatLoop == true or l_target == nil then
 			f_FMB_SPL_StopCombat()
-			g_FMB_SPL_CastSequenceCpt = 1
+			g_FMB_SPL_CastSequenceCpt = 0
+            g_FMB_SPL_ResetCastSequence = GetTime() + i_reset
 		end
 	end
 
@@ -167,15 +176,14 @@ function f_FMB_SPL_CastSequence(i_spells, i_reset)
 		return
 	end
 
-    if g_FMB_SPL_previousTarget ~= l_target then
-        g_FMB_SPL_CastSequenceCpt = 1
+    if (g_FMB_SPL_previousTarget ~= l_target)
+        or (i_spells[g_FMB_SPL_CastSequenceCpt] == nil)
+        or (GetTime() > g_FMB_SPL_ResetCastSequence) then
+        g_FMB_SPL_CastSequenceCpt = 0
+        g_FMB_SPL_ResetCastSequence = GetTime() + i_reset
     end
 
-    if i_spells[g_FMB_SPL_CastSequenceCpt] == nil then
-        g_FMB_SPL_CastSequenceCpt = 1
-    end
-
-    if f_FMB_SPL_Cast(g_CS_spellList[l_spellId]) == 0 then
+    if f_FMB_SPL_Cast(i_spells[g_FMB_SPL_CastSequenceCpt]) == 0 then
         g_FMB_SPL_CastSequenceCpt = g_FMB_SPL_CastSequenceCpt + 1
     end
 

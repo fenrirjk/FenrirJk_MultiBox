@@ -31,12 +31,17 @@ function f_FMB_EVT_OnEvent()
     end
 
     if (event == "CHAT_MSG_SPELL_SELF_DAMAGE") then
-        l_args, l_nbArgs = f_FMB_UTL_SplitStr(g_FMB_SPL_CurrentSpell, "(", 2)
-        if l_nbArgs ~= 2 then
-            f_FMT_UTL_Debug("f_FMB_EVT_OnEvent: Format error: " .. arg2)
+        local l_currentSpell
+
+        l_args, l_nbArgs = f_FMB_UTL_SplitStr(g_FMB_SPL_CurrentSpell, "%(", 2)
+        if l_nbArgs == 1 then
+            l_currentSpell = g_FMB_SPL_CurrentSpell
+        else
+            l_currentSpell = l_args[0]
         end
-        l_spellName = l_args[0]
-        if strfind(arg2, l_spellName) and (GetTime() < g_FMB_SPL_NextCastTime) then
+
+        if strfind(arg1, l_currentSpell) and (GetTime() < g_FMB_SPL_NextCastTime) then
+            f_FMT_UTL_Debug("f_FMB_EVT_OnEvent: arg1: " .. arg1)
             f_FMT_UTL_Debug("f_FMB_EVT_OnEvent: Fixing cast time of " .. g_FMB_SPL_CurrentSpell .. " to: " .. g_FMB_PlayerSpells[g_FMB_SPL_CurrentSpell].castTime - (g_FMB_SPL_NextCastTime - GetTime())/2)
             g_FMB_PlayerSpells[g_FMB_SPL_CurrentSpell].castTime = g_FMB_PlayerSpells[g_FMB_SPL_CurrentSpell].castTime - (g_FMB_SPL_NextCastTime - GetTime())/2
         end

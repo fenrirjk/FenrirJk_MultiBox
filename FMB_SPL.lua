@@ -5,10 +5,15 @@ function f_FMB_SPL_Init()
     g_FMB_SPL_ToonChainCast = {}
 end
 
-function f_FMB_SPL_Cast(i_spellname)
+function f_FMB_SPL_Cast(i_spellname, i_z_stopCast)
     local l_spell
 	local l_start
 	local l_duration
+
+    if i_z_stopCast == true then
+        SpellStopCasting()
+        f_FMB_SPL_StopCombat()
+    end
 
     if g_FMB_PlayerSpells == nil or g_FMB_PlayerSpells[i_spellname] == nil then
         f_FMB_SPL_GetSpellInfo()
@@ -132,7 +137,7 @@ function f_FMB_SPL_InitToonChainCast(i_turn, i_nextToon, i_spell)
         l_turn = false
     end
 
-    g_FMB_SPL_ToonChainCast[i_spell] = { turn = nil, nextToon = nil }
+    g_FMB_SPL_ToonChainCast[i_spell] = { }
     g_FMB_SPL_ToonChainCast[i_spell].turn = l_turn
     g_FMB_SPL_ToonChainCast[i_spell].nextToon = i_nextToon
 end
@@ -140,7 +145,7 @@ end
 function f_FMB_SPL_ToonChainCast(i_spell)
     if g_FMB_SPL_ToonChainCast[i_spell].turn == true then
 		SpellStopCasting()
-        if f_FMB_SPL_Cast(i_spell) == 0 then
+        if f_FMB_SPL_Cast(i_spell,true) == 0 then
             g_FMB_SPL_ToonChainCast[i_spell].turn = false
             f_FMB_EVT_RemoteScript(g_FMB_SPL_ToonChainCast[i_spell].nextToon .. ":g_FMB_SPL_ToonChainCast['" .. i_spell .. "'].turn = true")
         end
@@ -179,7 +184,7 @@ function f_FMB_SPL_CastSequence(i_spells, i_reset)
         g_FMB_SPL_ResetCastSequence = GetTime() + i_reset
     end
 
-    if f_FMB_SPL_Cast(i_spells[g_FMB_SPL_CastSequenceCpt]) == 0 then
+    if f_FMB_SPL_Cast(i_spells[g_FMB_SPL_CastSequenceCpt],false) == 0 then
         g_FMB_SPL_CastSequenceCpt = g_FMB_SPL_CastSequenceCpt + 1
     end
 

@@ -3,18 +3,25 @@ function f_FMB_TAR_Init()
 end
 
 function f_FMB_TAR_FindNearestTarget(i_raidTargetIndex, i_z_friend)
-    local i_cpt
+    local l_cpt
+    local l_AlreadyMetTarget = nil
 
-    i_cpt = 100
-    while i_cpt > 0 do
-        i_cpt = i_cpt - 1
+    l_cpt = 20
+    while l_cpt > 0 do
+        l_cpt = l_cpt - 1
         if i_z_friend == true then
             TargetNearestFriend()
         else
             TargetNearestEnemy()
         end
-		f_FMT_UTL_Log("f_FMB_TAR_FindNearestTarget: idx: " .. i_raidTargetIndex .. ", i_cpt: " .. i_cpt)
+
         if GetRaidTargetIndex("Target") == i_raidTargetIndex then return end
+
+        if l_AlreadyMetTarget ~= nil then
+            if l_AlreadyMetTarget == GetRaidTargetIndex("Target") then break end
+        else
+            l_AlreadyMetTarget = GetRaidTargetIndex("Target")
+        end
     end
 
     ClearTarget()

@@ -9,13 +9,14 @@ function f_FMB_TAR_FindNearestTarget(i_raidTargetIndex, i_z_friend)
     l_cpt = 20
     while l_cpt > 0 do
         l_cpt = l_cpt - 1
+
+        if GetRaidTargetIndex("Target") == i_raidTargetIndex then return end
+
         if i_z_friend == true then
             TargetNearestFriend()
         else
             TargetNearestEnemy()
         end
-
-        if GetRaidTargetIndex("Target") == i_raidTargetIndex then return end
 
         if l_AlreadyMetTarget ~= nil then
             if l_AlreadyMetTarget == GetRaidTargetIndex("Target") then break end

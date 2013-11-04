@@ -40,7 +40,7 @@ function f_FMB_EVT_OnEvent()
             l_currentSpell = l_args[0]
         end
 
-        if strfind(arg1, l_currentSpell) and (GetTime() < g_FMB_SPL_NextCastTime) then
+        if (l_currentSpell ~= nil) and (strfind(arg1, l_currentSpell)) and (GetTime() < g_FMB_SPL_NextCastTime) then
             f_FMT_UTL_Debug("f_FMB_EVT_OnEvent: arg1: " .. arg1)
             f_FMT_UTL_Debug("f_FMB_EVT_OnEvent: Fixing cast time of " .. g_FMB_SPL_CurrentSpell .. " to: " .. g_FMB_PlayerSpells[g_FMB_SPL_CurrentSpell].castTime - (g_FMB_SPL_NextCastTime - GetTime())/2)
             g_FMB_PlayerSpells[g_FMB_SPL_CurrentSpell].castTime = g_FMB_PlayerSpells[g_FMB_SPL_CurrentSpell].castTime - (g_FMB_SPL_NextCastTime - GetTime())/2

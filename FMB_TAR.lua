@@ -13,6 +13,7 @@ function f_FMB_TAR_FindNearestTarget(i_raidTargetIndex, i_z_friend)
         else
             TargetNearestEnemy()
         end
+		f_FMT_UTL_Log("f_FMB_TAR_FindNearestTarget: idx: " .. i_raidTargetIndex .. ", i_cpt: " .. i_cpt)
         if GetRaidTargetIndex("Target") == i_raidTargetIndex then return end
     end
 

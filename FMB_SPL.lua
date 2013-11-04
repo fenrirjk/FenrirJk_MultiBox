@@ -5,14 +5,16 @@ function f_FMB_SPL_Init()
     g_FMB_SPL_ToonChainCast = {}
 end
 
-function f_FMB_SPL_Cast(i_spellname, i_z_stopCast)
+function f_FMB_SPL_Cast(i_spellname, i_z_stopCombat)
     local l_spell
 	local l_start
 	local l_duration
 
-    if i_z_stopCast == true then
+    if i_z_stopCombat == true then
         SpellStopCasting()
         f_FMB_SPL_StopCombat()
+    else
+        if g_FMB_SPL_Combat == false then return -1 end
     end
 
     if g_FMB_PlayerSpells == nil or g_FMB_PlayerSpells[i_spellname] == nil then

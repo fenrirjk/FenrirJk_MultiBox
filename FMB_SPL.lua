@@ -3,28 +3,54 @@ function f_FMB_SPL_Init()
     g_FMB_SPL_FirstCombatLoop = false
     g_FMB_SPL_NextCastTime = 0
     g_FMB_SPL_ToonChainCast = {}
+    g_FMB_SPL_StackCast = {}
 end
 
-function f_FMB_SPL_Cast(i_spellname, i_z_stopCombat)
+function f_FMB_SPL_CastWrapper(i_str)
+    local l_spell, l_target, l_targetType
+
+    l_spell, l_nbArgs = f_FMB_UTL_SplitStr(i_str, ",", 2)
+
+    l_target = f_FMB_UTL_GetParam(l_spell, "target")
+    l_targetType = f_FMB_UTL_GetParam(l_spell, "targetType")
+    if (l_reset ~= nil) then l_reset = tonumber(l_reset) end
+    if (l_target ~= nil) then l_target = tonumber(l_target) end
+
+    f_FMB_SPL_CastSequence(l_spell[1], l_target, l_targetType)
+end
+
+function f_FMB_SPL_Cast(i_spell, i_target, i_targetType)
     local l_spell
 	local l_start
 	local l_duration
 
-    if i_z_stopCombat == true then
-        SpellStopCasting()
-        f_FMB_SPL_StopCombat()
-    else
-        if g_FMB_SPL_Combat == false then return -1 end
+    if g_FMB_SPL_StackCast.spell ~= nil then
+        i_spell = g_FMB_SPL_StackCast.spell
+        i_target = g_FMB_SPL_StackCast.target
+        i_targetType = g_FMB_SPL_StackCast.targetType
+        g_FMB_SPL_StackCast.spell = nil
+        g_FMB_SPL_StackCast.target = nil
+        g_FMB_SPL_StackCast.targetType = nil
     end
 
-    if g_FMB_PlayerSpells == nil or g_FMB_PlayerSpells[i_spellname] == nil then
+    if (i_target ~= nil) and (i_targetType == "friend") then
+        f_FMB_TAR_FindNearestFriend(i_target)
+    else
+        if g_FMB_SPL_Combat == false then return -1 end
+
+        if (i_target ~= nil) then
+            f_FMB_TAR_FindNearestEnemy(i_target)
+        end
+    end
+
+    if g_FMB_PlayerSpells == nil or g_FMB_PlayerSpells[i_spell] == nil then
         f_FMB_SPL_GetSpellInfo()
     end
 
-    l_spell = g_FMB_PlayerSpells[i_spellname]
+    l_spell = g_FMB_PlayerSpells[i_spell]
 
     if l_spell.index == nil then
-		f_FMT_UTL_Log("Spell: " .. i_spellname .. " Not found")
+		f_FMT_UTL_Log("Spell: " .. i_spell .. " Not found")
         return -1
     end
 
@@ -45,32 +71,35 @@ function f_FMB_SPL_Cast(i_spellname, i_z_stopCombat)
     return 0
 end
 
+function f_FMB_SPL_StackCastWrapper(i_str)
+    local l_spell, l_target, l_targetType
+
+    l_spell, l_nbArgs = f_FMB_UTL_SplitStr(i_str, ",", 2)
+
+    l_target = f_FMB_UTL_GetParam(l_spell, "target")
+    l_targetType = f_FMB_UTL_GetParam(l_spell, "targetType")
+    if (l_reset ~= nil) then l_reset = tonumber(l_reset) end
+    if (l_target ~= nil) then l_target = tonumber(l_target) end
+
+    g_FMB_SPL_StackCast.spell = l_spell[1]
+    g_FMB_SPL_StackCast.target = l_target
+    g_FMB_SPL_StackCast.targetType = l_targetType
+end
+
 function f_FMB_SPL_CastSequenceWrapper(i_str)
-    local l_reset
-    local l_spells
+    local l_spells, l_reset, l_target, l_targetType
 
     l_args, l_nbArgs = f_FMB_UTL_SplitStr(i_str, ",", 2)
     l_spells = l_args;
 
-    if strfind(l_args[0], "reset") ~= nil then
-        if l_nbArgs ~= 2 then
-            f_FMT_UTL_Log("f_FMB_SPL_CastSequenceWrapper:format error: " .. i_str)
-        end
-
-        l_spells = l_args[1]
-        l_reset, l_nbArgs = f_FMB_UTL_SplitStr(l_args[0], "=", 2)
-        if l_nbArgs == 2 then
-            l_reset = tonumber(f_FMB_UTL_Trim(l_reset[1]))
-        else
-            l_reset = nil
-        end
-    else
-        l_reset = nil
-        l_spells = i_str
-    end
+    l_reset = f_FMB_UTL_GetParam(l_args, "reset")
+    l_target = f_FMB_UTL_GetParam(l_args, "target")
+    l_targetType = f_FMB_UTL_GetParam(l_args, "targetType")
+    if (l_reset ~= nil) then l_reset = tonumber(l_reset) end
+    if (l_target ~= nil) then l_target = tonumber(l_target) end
 
     l_spells, l_nbArgs = f_FMB_UTL_SplitStr(l_spells, ",")
-    f_FMB_SPL_CastSequence(l_spells, l_reset)
+    f_FMB_SPL_CastSequence(l_spells, l_reset, l_target, l_targetType)
 end
 
 function f_FMB_SPL_GetSpellInfo()
@@ -147,30 +176,43 @@ end
 function f_FMB_SPL_ToonChainCast(i_spell)
     if g_FMB_SPL_ToonChainCast[i_spell].turn == true then
 		SpellStopCasting()
-        if f_FMB_SPL_Cast(i_spell,true) == 0 then
+        if f_FMB_SPL_Cast(i_spell,true,nil,nil) == 0 then
             g_FMB_SPL_ToonChainCast[i_spell].turn = false
             f_FMB_EVT_RemoteScript(g_FMB_SPL_ToonChainCast[i_spell].nextToon .. ":g_FMB_SPL_ToonChainCast['" .. i_spell .. "'].turn = true")
         end
     end
 end
 
-function f_FMB_SPL_CastSequence(i_spells, i_reset)
+function f_FMB_SPL_CastSequence(i_spells, i_reset, i_target, i_targetType)
     local l_target
     local l_spellId
     local l_cpt
 
-	l_target = UnitName("Target")
+    if g_FMB_SPL_StackCast.spell ~= nil then
+        f_FMB_SPL_Cast(nil, nil, nil)
+        return
+    end
 
 	if g_FMB_SPL_Combat == false then
 		return
 	end
+
+    if (i_target ~= nil) then
+        if i_targetType == "friend" then
+            f_FMB_TAR_FindNearestFriend(i_target)
+        else
+            f_FMB_TAR_FindNearestEnemy(i_target)
+        end
+    end
+
+	l_target = UnitName("Target")
 
 	if UnitAffectingCombat("player") then
 		g_FMB_SPL_FirstCombatLoop = true
 	else
 		if g_FMB_SPL_FirstCombatLoop == true or l_target == nil then
 			f_FMB_SPL_StopCombat()
-			g_FMB_SPL_CastSequenceCpt = 0
+			g_FMB_SPL_CastSequenceCpt = 1
             g_FMB_SPL_ResetCastSequence = GetTime() + i_reset
 		end
 	end
@@ -182,11 +224,11 @@ function f_FMB_SPL_CastSequence(i_spells, i_reset)
     if (g_FMB_SPL_previousTarget ~= l_target)
         or (i_spells[g_FMB_SPL_CastSequenceCpt] == nil)
         or (GetTime() > g_FMB_SPL_ResetCastSequence) then
-        g_FMB_SPL_CastSequenceCpt = 0
+        g_FMB_SPL_CastSequenceCpt = 1
         g_FMB_SPL_ResetCastSequence = GetTime() + i_reset
     end
 
-    if f_FMB_SPL_Cast(i_spells[g_FMB_SPL_CastSequenceCpt],false) == 0 then
+    if f_FMB_SPL_Cast(i_spells[g_FMB_SPL_CastSequenceCpt],nil,nil) == 0 then
         g_FMB_SPL_CastSequenceCpt = g_FMB_SPL_CastSequenceCpt + 1
     end
 

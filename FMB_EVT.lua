@@ -11,7 +11,7 @@ function f_FMB_EVT_RemoteScript(msg)
         f_FMT_UTL_Debug("f_FMB_EVT_RemoteScript: Format error")
     end
 
-    SendAddonMessage("FenrirJk's multiboxing canal RemoteScript", f_FMB_UTL_Trim(l_args[0]) .. ":" .. f_FMB_UTL_Trim(l_args[1]), "PARTY")
+    SendAddonMessage("FenrirJk's multiboxing canal RemoteScript", f_FMB_UTL_Trim(l_args[1]) .. ":" .. f_FMB_UTL_Trim(l_args[2]), "PARTY")
 end
 
 function f_FMB_EVT_OnEvent()
@@ -24,9 +24,9 @@ function f_FMB_EVT_OnEvent()
             f_FMT_UTL_Debug("f_FMB_EVT_OnEvent: Format error: " .. arg2)
         end
 
-        if l_args[0] == "PARTY" or l_args[0] == UnitName("PLAYER") then
-            f_FMT_UTL_Debug("Running script: " .. l_args[1])
-            RunScript(l_args[1])
+        if l_args[1] == "PARTY" or l_args[1] == UnitName("PLAYER") then
+            f_FMT_UTL_Debug("Running script: " .. l_args[2])
+            RunScript(l_args[2])
         end
     end
 
@@ -37,7 +37,7 @@ function f_FMB_EVT_OnEvent()
         if l_nbArgs == 1 then
             l_currentSpell = g_FMB_SPL_CurrentSpell
         else
-            l_currentSpell = l_args[0]
+            l_currentSpell = l_args[1]
         end
 
         if (l_currentSpell ~= nil) and (strfind(arg1, l_currentSpell)) and (GetTime() < g_FMB_SPL_NextCastTime) then

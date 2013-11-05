@@ -6,28 +6,15 @@ function f_FMB_SLA_Init()
 
     SLASH_FMB_Cast1 = "/FMB_Cast"
     SLASH_FMB_Cast2 = "/FMB_Cast"
-	SlashCmdList["FMB_Cast"] = function(i_args)
-        local l_args, l_nbArgs, l_z_reset
-        l_args, l_nbArgs = f_FMB_UTL_SplitStr(i_args, ",", 2)
-        if (l_nbArgs == 2) then
-            if (l_args[1] == "SpellStopCasting") then
-                l_z_reset = true
-            else
-                l_z_reset = false
-            end
-            f_FMB_SPL_Cast(l_args[0], l_z_reset)
-        else
-            if (l_nbArgs == 1) then
-                f_FMB_SPL_Cast(i_args, false)
-            else
-                f_FMT_UTL_Debug("/FMB_Cast: Format error: " .. i_args)
-            end
-        end
-    end
+	SlashCmdList["FMB_Cast"] = f_FMB_SPL_CastWrapper
 
     SLASH_FMB_CastSequence1 = "/FMB_CastSequence"
     SLASH_FMB_CastSequence2 = "/FMB_CastSequ"
 	SlashCmdList["FMB_CastSequence"] = f_FMB_SPL_CastSequenceWrapper
+
+    SLASH_FMB_StackCast1 = "/FMB_StackCast"
+    SLASH_FMB_StackCast2 = "/FMB_StackCast"
+	SlashCmdList["FMB_StackCast"] = f_FMB_SPL_StackCastWrapper
 
     SLASH_FMB_RemoteScript1 = "/FMB_RemoteScript"
     SLASH_FMB_RemoteScript2 = "/FMB_RemoteScript"
@@ -50,7 +37,7 @@ function f_FMB_SLA_Init()
         if l_nbArgs ~= 3 then
             f_FMT_UTL_Debug("/FMB_InitToonChainCast: Format error: " .. i_args)
         else
-            f_FMB_SPL_InitToonChainCast(l_args[0], l_args[1], l_args[2])
+            f_FMB_SPL_InitToonChainCast(l_args[1], l_args[2], l_args[3])
         end
     end
 

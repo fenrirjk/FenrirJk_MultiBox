@@ -23,7 +23,7 @@ function f_FMB_UTL_SplitStr(i_str, i_c, i_nbMax)
     local l_start
     local l_end
 
-    l_idx = 0;
+    l_idx = 1;
 
     while true do
         l_start, l_end = strfind(i_str, i_c)
@@ -37,4 +37,20 @@ function f_FMB_UTL_SplitStr(i_str, i_c, i_nbMax)
     l_split[l_idx] = i_str
 
     return l_split, l_idx+1
+end
+
+function f_FMB_UTL_GetParam(i_table, i_param)
+    local l_cpt, l_args, l_nbArgs, l_return
+
+    l_cpt = 1
+    l_return = nil
+    while l_cpt <= getn(i_table) do
+        if findstr(i_table[l_cpt], i_param .. "=") then
+            l_args, l_nbArgs = f_FMB_UTL_SplitStr(i_table[l_cpt], "=", 2)
+            tremove(i_table, l_cpt)
+            l_return = l_args[2]
+        end
+    end
+
+    return l_return
 end

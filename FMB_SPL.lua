@@ -176,7 +176,7 @@ function f_FMB_SPL_ToonChainCast(i_spell)
     local l_save_g_FMB_SPL_Combat
 
     if g_FMB_SPL_ToonChainCast[i_spell].turn == true then
-		SpellStopCasting()
+		f_FMB_SPL_StopCasting()
         l_save_g_FMB_SPL_Combat = g_FMB_SPL_Combat
         g_FMB_SPL_Combat = true
         if f_FMB_SPL_Cast(i_spell,nil,nil) == 0 then
@@ -237,4 +237,9 @@ function f_FMB_SPL_CastSequence(i_spells, i_reset, i_target, i_targetType)
     end
 
     g_FMB_SPL_previousTarget = l_target
+end
+
+function f_FMB_SPL_StopCasting()
+    SpellStopCasting()
+    g_FMB_SPL_NextCastTime = GetTime()
 end

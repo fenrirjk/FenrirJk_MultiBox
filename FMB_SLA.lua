@@ -44,4 +44,8 @@ function f_FMB_SLA_Init()
     SLASH_FMB_ToonChainCast1 = "/FMB_ToonChainCast"
     SLASH_FMB_ToonChainCast2 = "/FMB_ToonChainCast"
 	SlashCmdList["FMB_ToonChainCast"] = f_FMB_SPL_ToonChainCast
+
+    SLASH_FMB_StopCasting1 = "/FMB_StopCasting"
+    SLASH_FMB_StopCasting2 = "/FMB_StopCasting"
+	SlashCmdList["FMB_StopCasting"] = f_FMB_SPL_StopCasting
 end

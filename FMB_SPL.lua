@@ -190,7 +190,6 @@ function f_FMB_SPL_CastSequence(i_spells, i_reset, i_target, i_targetType)
 		g_FMB_SPL_FirstCombatLoop = true
 	else
 		if g_FMB_SPL_FirstCombatLoop == true or l_target == nil then
-			f_FMB_SPL_StopCombat()
 			g_FMB_SPL_CastSequenceCpt = 1
             g_FMB_SPL_ResetCastSequence = GetTime() + i_reset
 		end

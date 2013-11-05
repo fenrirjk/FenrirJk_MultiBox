@@ -1,5 +1,4 @@
 function f_FMB_SPL_Init()
-	g_FMB_SPL_Combat = false
     g_FMB_SPL_FirstCombatLoop = false
     g_FMB_SPL_NextCastTime = 0
     g_FMB_SPL_ToonChainCast = {}
@@ -33,12 +32,10 @@ function f_FMB_SPL_Cast(i_spell, i_target, i_targetType)
         g_FMB_SPL_StackCast.targetType = nil
     end
 
-    if (i_target ~= nil) and (i_targetType == "friend") then
-        f_FMB_TAR_FindNearestFriend(i_target)
-    else
-        if g_FMB_SPL_Combat == false then return -1 end
-
-        if (i_target ~= nil) then
+    if (i_target ~= nil) then
+        if and (i_targetType == "friend") then
+            f_FMB_TAR_FindNearestFriend(i_target)
+        else
             f_FMB_TAR_FindNearestEnemy(i_target)
         end
     end
@@ -142,19 +139,6 @@ function f_FMB_SPL_GetSpellInfo()
     end
 end
 
-function f_FMB_SPL_StartCombat()
-	if g_FMB_SPL_Combat == false then
-		g_FMB_SPL_Combat = true
-		g_FMB_SPL_FirstCombatLoop = false
-	end
-end
-
-function f_FMB_SPL_StopCombat()
-	if g_CS_combat == true then
-		g_FMB_SPL_Combat = false
-	end
-end
-
 function f_FMB_SPL_SetSpellList(i_spells)
     g_FMB_SpellList = i_spells
 end
@@ -173,17 +157,12 @@ function f_FMB_SPL_InitToonChainCast(i_turn, i_nextToon, i_spell)
 end
 
 function f_FMB_SPL_ToonChainCast(i_spell)
-    local l_save_g_FMB_SPL_Combat
-
     if g_FMB_SPL_ToonChainCast[i_spell].turn == true then
 		f_FMB_SPL_StopCasting()
-        l_save_g_FMB_SPL_Combat = g_FMB_SPL_Combat
-        g_FMB_SPL_Combat = true
         if f_FMB_SPL_Cast(i_spell,nil,nil) == 0 then
             g_FMB_SPL_ToonChainCast[i_spell].turn = false
             f_FMB_EVT_RemoteScript(g_FMB_SPL_ToonChainCast[i_spell].nextToon .. ":g_FMB_SPL_ToonChainCast['" .. i_spell .. "'].turn = true")
         end
-        g_FMB_SPL_Combat = l_save_g_FMB_SPL_Combat
     end
 end
 
@@ -196,10 +175,6 @@ function f_FMB_SPL_CastSequence(i_spells, i_reset, i_target, i_targetType)
         f_FMB_SPL_Cast(nil, nil, nil)
         return
     end
-
-	if g_FMB_SPL_Combat == false then
-		return
-	end
 
     if (i_target ~= nil) then
         if i_targetType == "friend" then

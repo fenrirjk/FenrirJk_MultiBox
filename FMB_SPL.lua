@@ -173,12 +173,17 @@ function f_FMB_SPL_InitToonChainCast(i_turn, i_nextToon, i_spell)
 end
 
 function f_FMB_SPL_ToonChainCast(i_spell)
+    local l_save_g_FMB_SPL_Combat
+
     if g_FMB_SPL_ToonChainCast[i_spell].turn == true then
 		SpellStopCasting()
-        if f_FMB_SPL_Cast(i_spell,true,nil,nil) == 0 then
+        l_save_g_FMB_SPL_Combat = g_FMB_SPL_Combat
+        g_FMB_SPL_Combat = true
+        if f_FMB_SPL_Cast(i_spell,nil,nil) == 0 then
             g_FMB_SPL_ToonChainCast[i_spell].turn = false
             f_FMB_EVT_RemoteScript(g_FMB_SPL_ToonChainCast[i_spell].nextToon .. ":g_FMB_SPL_ToonChainCast['" .. i_spell .. "'].turn = true")
         end
+        g_FMB_SPL_Combat = l_save_g_FMB_SPL_Combat
     end
 end
 

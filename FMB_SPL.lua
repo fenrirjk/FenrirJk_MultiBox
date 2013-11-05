@@ -9,7 +9,7 @@ end
 function f_FMB_SPL_CastWrapper(i_str)
     local l_spell, l_target, l_targetType
 
-    l_spell, l_nbArgs = f_FMB_UTL_SplitStr(i_str, ",", 2)
+    l_spell, l_nbArgs = f_FMB_UTL_SplitStr(i_str, ",")
 
     l_target = f_FMB_UTL_GetParam(l_spell, "target")
     l_targetType = f_FMB_UTL_GetParam(l_spell, "targetType")
@@ -74,7 +74,7 @@ end
 function f_FMB_SPL_StackCastWrapper(i_str)
     local l_spell, l_target, l_targetType
 
-    l_spell, l_nbArgs = f_FMB_UTL_SplitStr(i_str, ",", 2)
+    l_spell, l_nbArgs = f_FMB_UTL_SplitStr(i_str, ",")
 
     l_target = f_FMB_UTL_GetParam(l_spell, "target")
     l_targetType = f_FMB_UTL_GetParam(l_spell, "targetType")
@@ -89,7 +89,7 @@ end
 function f_FMB_SPL_CastSequenceWrapper(i_str)
     local l_spells, l_reset, l_target, l_targetType
 
-    l_args, l_nbArgs = f_FMB_UTL_SplitStr(i_str, ",", 2)
+    l_args, l_nbArgs = f_FMB_UTL_SplitStr(i_str, ",")
     l_spells = l_args;
 
     l_reset = f_FMB_UTL_GetParam(l_args, "reset")
@@ -98,7 +98,6 @@ function f_FMB_SPL_CastSequenceWrapper(i_str)
     if (l_reset ~= nil) then l_reset = tonumber(l_reset) end
     if (l_target ~= nil) then l_target = tonumber(l_target) end
 
-    l_spells, l_nbArgs = f_FMB_UTL_SplitStr(l_spells, ",")
     f_FMB_SPL_CastSequence(l_spells, l_reset, l_target, l_targetType)
 end
 

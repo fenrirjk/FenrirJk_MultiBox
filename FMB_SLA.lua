@@ -22,7 +22,7 @@ function f_FMB_SLA_Init()
 
     SLASH_FMB_FindNearestEnemy1 = "/FMB_FindNearestEnemy"
     SLASH_FMB_FindNearestEnemy2 = "/FMB_FindNearestEnemy"
-	SlashCmdList["FMB_FindNearestEnemy"] = function(id) f_FMB_TAR_FindNearestenemy(tonumber(id)) end
+	SlashCmdList["FMB_FindNearestEnemy"] = function(id) f_FMB_TAR_FindNearestEnemy(tonumber(id)) end
 
     SLASH_FMB_StartCombat1 = "/FMB_StartCombat"
     SLASH_FMB_StartCombat2 = "/FMB_StartCombat"

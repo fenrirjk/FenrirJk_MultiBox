@@ -32,6 +32,6 @@ function f_FMB_TAR_FindNearestFriend(i_raidTargetIndex)
     f_FMB_TAR_FindNearestTarget(i_raidTargetIndex, true)
 end
 
-function f_FMB_TAR_FindNearestenemy(i_raidTargetIndex)
+function f_FMB_TAR_FindNearestEnemy(i_raidTargetIndex)
     f_FMB_TAR_FindNearestTarget(i_raidTargetIndex, false)
 end

@@ -26,17 +26,17 @@ function f_FMB_UTL_SplitStr(i_str, i_c, i_nbMax)
     l_idx = 1;
 
     while true do
+        if i_nbMax ~= nil and i_nbMax == l_idx then break end
         l_start, l_end = strfind(i_str, i_c)
         if l_start == nil then break end
         l_split[l_idx] = strsub(i_str, 1, l_start-1)
-        l_idx = l_idx + 1
         i_str = strsub(i_str, l_end+1)
-        if i_nbMax ~= nil and i_nbMax-1 == l_idx then break end
+        l_idx = l_idx + 1
     end
 
     l_split[l_idx] = i_str
 
-    return l_split, l_idx+1
+    return l_split, l_idx
 end
 
 function f_FMB_UTL_GetParam(i_table, i_param)
@@ -44,12 +44,15 @@ function f_FMB_UTL_GetParam(i_table, i_param)
 
     l_cpt = 1
     l_return = nil
+    f_FMT_UTL_Log("f_FMB_UTL_GetParam: i_param: " .. i_param)
     while l_cpt <= getn(i_table) do
-        if findstr(i_table[l_cpt], i_param .. "=") then
+        if strfind(i_table[l_cpt], i_param .. "=") then
+            f_FMT_UTL_Log("f_FMB_UTL_GetParam: i_table[" .. l_cpt .. "]: " .. i_table[l_cpt])
             l_args, l_nbArgs = f_FMB_UTL_SplitStr(i_table[l_cpt], "=", 2)
             tremove(i_table, l_cpt)
             l_return = l_args[2]
         end
+        l_cpt = l_cpt + 1
     end
 
     return l_return

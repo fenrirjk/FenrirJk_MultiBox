@@ -33,7 +33,7 @@ function f_FMB_SPL_Cast(i_spell, i_target, i_targetType)
     end
 
     if (i_target ~= nil) then
-        if and (i_targetType == "friend") then
+        if (i_targetType == "friend") then
             f_FMB_TAR_FindNearestFriend(i_target)
         else
             f_FMB_TAR_FindNearestEnemy(i_target)

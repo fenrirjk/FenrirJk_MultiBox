@@ -44,10 +44,8 @@ function f_FMB_UTL_GetParam(i_table, i_param)
 
     l_cpt = 1
     l_return = nil
-    f_FMT_UTL_Log("f_FMB_UTL_GetParam: i_param: " .. i_param)
     while l_cpt <= getn(i_table) do
         if strfind(i_table[l_cpt], i_param .. "=") then
-            f_FMT_UTL_Log("f_FMB_UTL_GetParam: i_table[" .. l_cpt .. "]: " .. i_table[l_cpt])
             l_args, l_nbArgs = f_FMB_UTL_SplitStr(i_table[l_cpt], "=", 2)
             tremove(i_table, l_cpt)
             l_return = l_args[2]

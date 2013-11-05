@@ -16,7 +16,7 @@ function f_FMB_SPL_CastWrapper(i_str)
     if (l_reset ~= nil) then l_reset = tonumber(l_reset) end
     if (l_target ~= nil) then l_target = tonumber(l_target) end
 
-    f_FMB_SPL_CastSequence(l_spell[1], l_target, l_targetType)
+    f_FMB_SPL_Cast(l_spell[1], l_target, l_targetType)
 end
 
 function f_FMB_SPL_Cast(i_spell, i_target, i_targetType)

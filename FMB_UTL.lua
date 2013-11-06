@@ -2,8 +2,8 @@ function f_FMB_UTL_SendMsg(m)
   DEFAULT_CHAT_FRAME:AddMessage(m);
 end
 
-f_FMT_UTL_Log = f_FMB_UTL_SendMsg
-f_FMT_UTL_Debug = f_FMB_UTL_SendMsg
+f_FMB_UTL_Log = f_FMB_UTL_SendMsg
+f_FMB_UTL_Debug = f_FMB_UTL_SendMsg
 
 function f_FMB_UTL_Trim(i_str)
     local l_start

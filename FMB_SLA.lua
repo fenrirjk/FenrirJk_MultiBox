@@ -35,7 +35,7 @@ function f_FMB_SLA_Init()
         local l_args, l_nbArgs
         l_args, l_nbArgs = f_FMB_UTL_SplitStr(i_args, ",", 3)
         if l_nbArgs ~= 3 then
-            f_FMT_UTL_Debug("/FMB_InitToonChainCast: Format error: " .. i_args)
+            f_FMB_UTL_Debug("/FMB_InitToonChainCast: Format error: " .. i_args)
         else
             f_FMB_SPL_InitToonChainCast(l_args[1], l_args[2], l_args[3])
         end

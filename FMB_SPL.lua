@@ -3,7 +3,6 @@ function f_FMB_SPL_Init()
     g_FMB_SPL_NextCastTime = 0
     g_FMB_SPL_ToonChainCast = {}
     g_FMB_SPL_StackCast = {}
-    g_FMB_SPL_CurrentSpell = "";
 end
 
 function f_FMB_SPL_CastWrapper(i_str)
@@ -48,7 +47,7 @@ function f_FMB_SPL_Cast(i_spell, i_target, i_targetType)
     l_spell = g_FMB_PlayerSpells[i_spell]
 
     if l_spell.index == nil then
-		f_FMT_UTL_Log("Spell: " .. i_spell .. " Not found")
+		f_FMB_UTL_Log("Spell: " .. i_spell .. " Not found")
         return -1
     end
 
@@ -63,7 +62,7 @@ function f_FMB_SPL_Cast(i_spell, i_target, i_targetType)
 	end
 
     g_FMB_SPL_NextCastTime = GetTime() + l_spell.castTime
-    g_FMB_SPL_CurrentSpell = i_spellname
+    g_FMB_SPL_CurrentSpell = i_spell
     CastSpell(l_spell.index, BOOKTYPE_SPELL)
 
     return 0
@@ -121,7 +120,7 @@ function f_FMB_SPL_GetSpellInfo()
             end
             g_FMB_PlayerSpells[l_spellname.."("..l_spellrank..")"] = l_spell
             g_FMB_PlayerSpells[l_spellname] = l_spell
-            f_FMT_UTL_Log("Found spell: " .. l_spellname .. ", ID: " .. l_spell.index)
+            f_FMB_UTL_Log("Found spell: " .. l_spellname .. ", ID: " .. l_spell.index)
         end
         l_index = l_index+1
     end

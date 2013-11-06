@@ -16,7 +16,6 @@ end
 
 function f_FMB_EVT_OnEvent()
     local l_args, l_nbArgs
-    local l_spellName
 
     if (event == "CHAT_MSG_ADDON") and (arg1 == "FenrirJk's multiboxing canal RemoteScript") then
         l_args, l_nbArgs = f_FMB_UTL_SplitStr(arg2, ":", 2)

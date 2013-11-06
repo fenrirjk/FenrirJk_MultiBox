@@ -3,6 +3,7 @@ function f_FMB_SPL_Init()
     g_FMB_SPL_NextCastTime = 0
     g_FMB_SPL_ToonChainCast = {}
     g_FMB_SPL_StackCast = {}
+    g_FMB_SPL_CurrentSpell = "";
 end
 
 function f_FMB_SPL_CastWrapper(i_str)
